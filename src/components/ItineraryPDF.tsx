@@ -1,4 +1,4 @@
-import { Document, Page, Text, View, StyleSheet, Image, Font } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet, Font } from '@react-pdf/renderer';
 import type { BookingData } from '../lib/types';
 
 Font.register({
@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingBottom: 15,
     borderBottomWidth: 2,
-    borderBottomColor: '#3b82f6',
+    borderBottomColor: '#1e40af',
   },
   logoArea: {
     flexDirection: 'row',
@@ -37,23 +37,24 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   logoIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 8,
-    backgroundColor: '#3b82f6',
+    width: 40,
+    height: 40,
+    borderRadius: 6,
+    backgroundColor: '#1e40af',
     justifyContent: 'center',
     alignItems: 'center',
   },
   logoText: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: 'bold',
     color: '#0f172a',
+    fontFamily: 'Helvetica-Bold',
   },
   logoSubtext: {
     fontSize: 8,
     color: '#64748b',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 0.5,
   },
   refArea: {
     alignItems: 'flex-end',
@@ -64,18 +65,24 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   refValue: {
-    fontSize: 12,
+    fontSize: 11,
     fontWeight: 'bold',
-    color: '#3b82f6',
+    color: '#1e40af',
     fontFamily: 'Helvetica-Bold',
   },
+  refDate: {
+    fontSize: 8,
+    color: '#475569',
+    marginTop: 2,
+  },
   title: {
-    fontSize: 14,
+    fontSize: 16,
     fontWeight: 'bold',
     color: '#0f172a',
-    marginBottom: 15,
+    marginBottom: 20,
     textTransform: 'uppercase',
     letterSpacing: 1,
+    fontFamily: 'Helvetica-Bold',
   },
   section: {
     marginBottom: 20,
@@ -83,17 +90,18 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 10,
     fontWeight: 'bold',
-    color: '#3b82f6',
+    color: '#1e40af',
     textTransform: 'uppercase',
     letterSpacing: 0.5,
-    marginBottom: 8,
+    marginBottom: 10,
     paddingBottom: 4,
     borderBottomWidth: 1,
     borderBottomColor: '#e2e8f0',
+    fontFamily: 'Helvetica-Bold',
   },
   flightCard: {
     backgroundColor: '#f8fafc',
-    borderRadius: 8,
+    borderRadius: 4,
     padding: 15,
     borderWidth: 1,
     borderColor: '#e2e8f0',
@@ -102,69 +110,107 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   airport: {
     alignItems: 'center',
+    width: 120,
   },
   airportCode: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#0f172a',
     fontFamily: 'Helvetica-Bold',
   },
+  airportCity: {
+    fontSize: 10,
+    color: '#475569',
+    fontWeight: 'bold',
+    marginTop: 2,
+  },
   airportName: {
-    fontSize: 8,
-    color: '#64748b',
+    fontSize: 7,
+    color: '#94a3b8',
+    marginTop: 1,
   },
   flightMiddle: {
     flex: 1,
     alignItems: 'center',
-    paddingHorizontal: 15,
+    paddingHorizontal: 10,
   },
   flightDuration: {
     fontSize: 9,
     color: '#64748b',
+    marginBottom: 4,
   },
   flightLine: {
     width: '100%',
     height: 1,
-    backgroundColor: '#cbd5e1',
-    marginVertical: 4,
+    backgroundColor: '#94a3b8',
+    marginBottom: 4,
   },
   flightStops: {
     fontSize: 8,
-    color: '#94a3b8',
+    color: '#64748b',
   },
-  flightDetails: {
+  flightDetailsGrid: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     borderTopWidth: 1,
     borderTopColor: '#e2e8f0',
-    paddingTop: 10,
+    paddingTop: 12,
     marginTop: 5,
   },
   flightDetailItem: {
     alignItems: 'center',
+    flex: 1,
   },
   flightDetailLabel: {
     fontSize: 7,
     color: '#94a3b8',
     textTransform: 'uppercase',
+    marginBottom: 2,
   },
   flightDetailValue: {
     fontSize: 9,
     fontWeight: 'bold',
-    color: '#334155',
+    color: '#1e293b',
+    fontFamily: 'Helvetica-Bold',
+  },
+  dateRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#eff6ff',
+    borderRadius: 4,
+    padding: 10,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#bfdbfe',
+  },
+  dateItem: {
+    alignItems: 'center',
+    flex: 1,
+  },
+  dateLabel: {
+    fontSize: 7,
+    color: '#64748b',
+    textTransform: 'uppercase',
+    marginBottom: 2,
+  },
+  dateValue: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#1e40af',
     fontFamily: 'Helvetica-Bold',
   },
   passengerGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 15,
+    gap: 10,
   },
   passengerField: {
     width: '45%',
+    marginBottom: 8,
   },
   passengerLabel: {
     fontSize: 7,
@@ -177,23 +223,46 @@ const styles = StyleSheet.create({
     color: '#1e293b',
     fontWeight: 'bold',
   },
-  disclaimer: {
-    backgroundColor: '#fef3c7',
-    borderRadius: 8,
+  fareBox: {
+    backgroundColor: '#f0fdf4',
+    borderRadius: 4,
     padding: 12,
     borderWidth: 1,
-    borderColor: '#fbbf24',
+    borderColor: '#86efac',
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  fareLabel: {
+    fontSize: 10,
+    color: '#166534',
+    fontWeight: 'bold',
+    fontFamily: 'Helvetica-Bold',
+  },
+  fareValue: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#166534',
+    fontFamily: 'Helvetica-Bold',
+  },
+  disclaimer: {
+    backgroundColor: '#fefce8',
+    borderRadius: 4,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: '#fde047',
     marginTop: 15,
   },
   disclaimerTitle: {
     fontSize: 9,
     fontWeight: 'bold',
-    color: '#92400e',
+    color: '#854d0e',
     marginBottom: 4,
     fontFamily: 'Helvetica-Bold',
   },
   disclaimerText: {
-    fontSize: 8,
+    fontSize: 7,
     color: '#a16207',
     lineHeight: 1.4,
   },
@@ -214,82 +283,86 @@ const styles = StyleSheet.create({
   },
   watermark: {
     position: 'absolute',
-    top: '40%',
-    left: '10%',
-    right: '10%',
-    transform: 'rotate(-30deg)',
-    fontSize: 60,
+    top: '45%',
+    left: 0,
+    right: 0,
+    transform: 'rotate(-25deg)',
+    fontSize: 50,
     fontWeight: 'bold',
-    color: 'rgba(239, 68, 68, 0.08)',
+    color: 'rgba(239, 68, 68, 0.07)',
     textAlign: 'center',
-    fontFamily: 'Helvetica-Bold',
-  },
-  priceTag: {
-    backgroundColor: '#eff6ff',
-    borderRadius: 6,
-    padding: 8,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: '#bfdbfe',
-  },
-  priceLabel: {
-    fontSize: 9,
-    color: '#1e40af',
-  },
-  priceValue: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#1e40af',
     fontFamily: 'Helvetica-Bold',
   },
 });
 
 function formatTime(iso: string): string {
+  if (!iso) return '';
   try {
     const d = new Date(iso);
-    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
   } catch { return iso; }
 }
 
-function formatDate(iso: string): string {
+function formatDateFull(iso: string): string {
+  if (!iso) return '';
   try {
     const d = new Date(iso);
-    return d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' });
+  } catch { return iso; }
+}
+
+function formatDateShort(iso: string): string {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('en-US', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+  } catch { return iso; }
+}
+
+function formatDateGenerated(iso: string): string {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString('en-US', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'UTC' });
   } catch { return iso; }
 }
 
 export function ItineraryPDF({ booking, watermark }: ItineraryPDFProps) {
   const { flight, passenger } = booking;
 
+  const depDateFull = flight.departureDate ? formatDateFull(flight.departureDate) : '';
+  const arrDateFull = flight.arrivalDate ? formatDateFull(flight.arrivalDate) : depDateFull;
+  const depDateShort = flight.departureDate ? formatDateShort(flight.departureDate) : '';
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
-        {watermark && <Text style={styles.watermark}>BOOK DRAFT - SAMPLE</Text>}
+        {watermark && <Text style={styles.watermark}>SAMPLE</Text>}
 
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.logoArea}>
             <View style={styles.logoIcon}>
-              <Text style={{ fontSize: 14, color: '#ffffff', fontFamily: 'Helvetica-Bold' }}>BD</Text>
+              <Text style={{ fontSize: 16, color: '#ffffff', fontFamily: 'Helvetica-Bold' }}>BD</Text>
             </View>
             <View>
               <Text style={styles.logoText}>BOOK DRAFT</Text>
-              <Text style={styles.logoSubtext}>Flight Itinerary Generator</Text>
+              <Text style={styles.logoSubtext}>Flight Itinerary</Text>
             </View>
           </View>
           <View style={styles.refArea}>
-            <Text style={styles.refLabel}>Reference</Text>
+            <Text style={styles.refLabel}>Booking Reference</Text>
             <Text style={styles.refValue}>{booking.bookingRef}</Text>
-            <Text style={{ ...styles.refLabel, marginTop: 4 }}>Generated</Text>
-            <Text style={{ fontSize: 8, color: '#475569' }}>{formatDate(booking.createdAt)}</Text>
+            <Text style={styles.refDate}>Generated: {formatDateGenerated(booking.createdAt)}</Text>
           </View>
         </View>
 
         {/* Title */}
-        <Text style={styles.title}>Flight Itinerary</Text>
+        <Text style={styles.title}>Flight Itinerary / Reservation</Text>
 
         {/* Flight Details */}
         <View style={styles.section}>
@@ -298,30 +371,25 @@ export function ItineraryPDF({ booking, watermark }: ItineraryPDFProps) {
             <View style={styles.flightRoute}>
               <View style={styles.airport}>
                 <Text style={styles.airportCode}>{flight.origin}</Text>
-                <Text style={styles.airportName}>{flight.originName || flight.origin}</Text>
+                <Text style={styles.airportCity}>{flight.originCity || flight.origin}</Text>
+                <Text style={styles.airportName}>{flight.originName || ''}</Text>
               </View>
               <View style={styles.flightMiddle}>
                 <Text style={styles.flightDuration}>{flight.duration}</Text>
                 <View style={styles.flightLine} />
                 <Text style={styles.flightStops}>
-                  {flight.stops === 0 ? 'Direct' : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`}
+                  {flight.stops === 0 ? 'Direct Flight' : `${flight.stops} Stop${flight.stops > 1 ? 's' : ''}`}
                 </Text>
               </View>
               <View style={styles.airport}>
                 <Text style={styles.airportCode}>{flight.destination}</Text>
-                <Text style={styles.airportName}>{flight.destinationName || flight.destination}</Text>
+                <Text style={styles.airportCity}>{flight.destinationCity || flight.destination}</Text>
+                <Text style={styles.airportName}>{flight.destinationName || ''}</Text>
               </View>
             </View>
 
-            <View style={styles.flightDetails}>
-              <View style={styles.flightDetailItem}>
-                <Text style={styles.flightDetailLabel}>Airline</Text>
-                <Text style={styles.flightDetailValue}>{flight.airline}</Text>
-              </View>
-              <View style={styles.flightDetailItem}>
-                <Text style={styles.flightDetailLabel}>Flight No.</Text>
-                <Text style={styles.flightDetailValue}>{flight.flightNumber}</Text>
-              </View>
+            {/* Departure / Arrival Times */}
+            <View style={styles.flightDetailsGrid}>
               <View style={styles.flightDetailItem}>
                 <Text style={styles.flightDetailLabel}>Departure</Text>
                 <Text style={styles.flightDetailValue}>{formatTime(flight.departureTime)}</Text>
@@ -331,14 +399,37 @@ export function ItineraryPDF({ booking, watermark }: ItineraryPDFProps) {
                 <Text style={styles.flightDetailValue}>{formatTime(flight.arrivalTime)}</Text>
               </View>
               <View style={styles.flightDetailItem}>
-                <Text style={styles.flightDetailLabel}>Cabin</Text>
-                <Text style={styles.flightDetailValue}>{flight.cabinClass}</Text>
+                <Text style={styles.flightDetailLabel}>Airline</Text>
+                <Text style={styles.flightDetailValue}>{flight.airline}</Text>
+              </View>
+              <View style={styles.flightDetailItem}>
+                <Text style={styles.flightDetailLabel}>Flight No.</Text>
+                <Text style={styles.flightDetailValue}>{flight.flightNumber}</Text>
+              </View>
+              <View style={styles.flightDetailItem}>
+                <Text style={styles.flightDetailLabel}>Cabin Class</Text>
+                <Text style={styles.flightDetailValue}>{flight.cabinClass.charAt(0).toUpperCase() + flight.cabinClass.slice(1)}</Text>
               </View>
             </View>
 
-            <View style={styles.priceTag}>
-              <Text style={styles.priceLabel}>Estimated Fare</Text>
-              <Text style={styles.priceValue}>{flight.currency} ${flight.price.toLocaleString()}</Text>
+            {/* Date Row */}
+            <View style={styles.dateRow}>
+              <View style={styles.dateItem}>
+                <Text style={styles.dateLabel}>Departure Date</Text>
+                <Text style={styles.dateValue}>{depDateFull}</Text>
+              </View>
+              {flight.arrivalDate && flight.arrivalDate !== flight.departureDate && (
+                <View style={styles.dateItem}>
+                  <Text style={styles.dateLabel}>Arrival Date</Text>
+                  <Text style={styles.dateValue}>{arrDateFull}</Text>
+                </View>
+              )}
+            </View>
+
+            {/* Fare */}
+            <View style={styles.fareBox}>
+              <Text style={styles.fareLabel}>Ticket Price</Text>
+              <Text style={styles.fareValue}>{flight.currency} ${flight.price.toLocaleString()}</Text>
             </View>
           </View>
         </View>
@@ -349,29 +440,28 @@ export function ItineraryPDF({ booking, watermark }: ItineraryPDFProps) {
           <View style={styles.passengerGrid}>
             <Field label="Full Name" value={`${passenger.firstName} ${passenger.lastName}`} />
             <Field label="Passport Number" value={passenger.passportNumber} />
+            <Field label="Date of Birth" value={passenger.dateOfBirth} />
+            <Field label="Nationality" value={passenger.nationality} />
             <Field label="Email" value={passenger.email} />
             <Field label="Phone" value={passenger.phone} />
-            <Field label="Nationality" value={passenger.nationality} />
-            <Field label="Date of Birth" value={passenger.dateOfBirth} />
           </View>
         </View>
 
         {/* Disclaimer */}
         <View style={styles.disclaimer}>
-          <Text style={styles.disclaimerTitle}>IMPORTANT DISCLAIMER</Text>
+          <Text style={styles.disclaimerTitle}>IMPORTANT NOTICE</Text>
           <Text style={styles.disclaimerText}>
-            This document represents a proposed itinerary / unconfirmed reservation draft generated for planning purposes only. 
-            This is NOT a paid airline ticket, confirmed booking, or proof of purchase. 
-            This itinerary is intended solely for use in visa applications and travel planning reference.
-            Actual flight availability, schedules, and prices may vary and are subject to change without notice.
-            Book Draft assumes no liability for decisions made based on this document.
+            This document is a flight itinerary / reservation draft for visa application and travel planning purposes only. 
+            It is NOT a confirmed airline ticket, paid booking, or proof of purchase. 
+            Flight schedules, availability, and fares are subject to change. 
+            Please contact the airline directly to confirm your booking before travel.
           </Text>
         </View>
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Book Draft - Flight Itinerary / Reservation Draft Generator</Text>
-          <Text style={styles.footerText}>www.bookdraft.app &bull; For planning purposes only</Text>
+          <Text style={styles.footerText}>Book Draft - Flight Itinerary Generator</Text>
+          <Text style={styles.footerText}>For planning purposes only</Text>
         </View>
       </Page>
     </Document>

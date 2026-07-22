@@ -30,7 +30,7 @@ export function FlightResults({ results, onSelect, onBack, searchParams }: Fligh
             {searchParams.origin} &rarr; {searchParams.destination}
           </h2>
           <p className="text-sm text-gray-500">
-            {searchParams.departureDate} &bull; {searchParams.passengers} {searchParams.passengers === 1 ? 'passenger' : 'passengers'} &bull; {searchParams.cabinClass}
+            {formatDate(searchParams.departureDate)} &bull; {searchParams.passengers} {searchParams.passengers === 1 ? 'passenger' : 'passengers'} &bull; {searchParams.cabinClass}
           </p>
         </div>
       </div>
@@ -74,7 +74,8 @@ export function FlightResults({ results, onSelect, onBack, searchParams }: Fligh
                 <div className="flex-1 flex items-center gap-4">
                   <div className="text-right">
                     <p className="text-xl font-bold text-gray-900">{formatTime(offer.departureTime)}</p>
-                    <p className="text-sm text-gray-500">{offer.origin}</p>
+                    <p className="text-sm text-gray-900 font-medium">{offer.origin}</p>
+                    <p className="text-xs text-gray-500">{offer.originCity}</p>
                   </div>
 
                   <div className="flex-1 flex flex-col items-center gap-1">
@@ -101,7 +102,8 @@ export function FlightResults({ results, onSelect, onBack, searchParams }: Fligh
 
                   <div>
                     <p className="text-xl font-bold text-gray-900">{formatTime(offer.arrivalTime)}</p>
-                    <p className="text-sm text-gray-500">{offer.destination}</p>
+                    <p className="text-sm text-gray-900 font-medium">{offer.destination}</p>
+                    <p className="text-xs text-gray-500">{offer.destinationCity}</p>
                   </div>
                 </div>
 
@@ -140,5 +142,16 @@ function formatTime(time: string): string {
     return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
   } catch {
     return time;
+  }
+}
+
+function formatDate(dateStr: string): string {
+  if (!dateStr) return '';
+  try {
+    const d = new Date(dateStr + 'T00:00:00');
+    if (isNaN(d.getTime())) return dateStr;
+    return d.toLocaleDateString('en-US', { weekday: 'short', day: 'numeric', month: 'short', year: 'numeric' });
+  } catch {
+    return dateStr;
   }
 }

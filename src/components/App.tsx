@@ -2,11 +2,10 @@ import { useState, useCallback } from 'react';
 import { FlightSearch } from './FlightSearch';
 import { FlightResults } from './FlightResults';
 import { PassengerForm } from './PassengerForm';
-import { PaymentGate } from './PaymentGate';
 import { DownloadPage } from './DownloadPage';
 import type { FlightOffer, PassengerInfo, BookingData } from '../lib/types';
 
-type Step = 'search' | 'results' | 'passenger' | 'payment' | 'download';
+type Step = 'search' | 'results' | 'passenger' | 'download';
 
 export default function App() {
   const [step, setStep] = useState<Step>('search');
@@ -29,12 +28,11 @@ export default function App() {
       paid: false,
     };
     setBookingData(booking);
-    setStep('payment');
+    setStep('download');
   }, [selectedFlight]);
 
   const handlePaymentSuccess = useCallback(() => {
     setBookingData(prev => prev ? { ...prev, paid: true } : null);
-    setStep('download');
   }, []);
 
   const handleNewSearch = useCallback(() => {
@@ -64,7 +62,7 @@ export default function App() {
 
             {/* Step indicator */}
             <div className="hidden sm:flex items-center gap-2">
-              {(['search', 'results', 'passenger', 'payment', 'download'] as Step[]).map((s, i) => (
+              {(['search', 'results', 'passenger', 'download'] as Step[]).map((s, i) => (
                 <div key={s} className="flex items-center gap-2">
                   <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-all ${
                     step === s
@@ -81,7 +79,7 @@ export default function App() {
                       i + 1
                     )}
                   </div>
-                  {i < 4 && <div className={`w-8 h-0.5 ${getStepIndex(step) > i ? 'bg-green-500' : 'bg-white/10'}`} />}
+                  {i < 3 && <div className={`w-8 h-0.5 ${getStepIndex(step) > i ? 'bg-green-500' : 'bg-white/10'}`} />}
                 </div>
               ))}
             </div>
@@ -101,17 +99,11 @@ export default function App() {
             onBack={() => setStep('search')}
           />
         )}
-        {step === 'payment' && bookingData && (
-          <PaymentGate
-            booking={bookingData}
-            onPaymentSuccess={handlePaymentSuccess}
-            onBack={() => setStep('passenger')}
-          />
-        )}
         {step === 'download' && bookingData && (
           <DownloadPage
             booking={bookingData}
             onNewSearch={handleNewSearch}
+            onPaymentSuccess={handlePaymentSuccess}
           />
         )}
       </main>
@@ -144,6 +136,6 @@ function generateBookingRef(): string {
 }
 
 function getStepIndex(step: Step): number {
-  const steps: Step[] = ['search', 'results', 'passenger', 'payment', 'download'];
+  const steps: Step[] = ['search', 'results', 'passenger', 'download'];
   return steps.indexOf(step);
 }

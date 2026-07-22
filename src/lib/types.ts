@@ -2,10 +2,14 @@ export interface FlightOffer {
   id: string;
   origin: string;
   destination: string;
+  originCity: string;
+  destinationCity: string;
   originName: string;
   destinationName: string;
+  departureDate: string;
   departureTime: string;
   arrivalTime: string;
+  arrivalDate: string;
   airline: string;
   airlineIata: string;
   airlineLogo: string;
