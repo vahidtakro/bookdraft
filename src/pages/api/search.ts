@@ -2,11 +2,22 @@ import type { APIRoute } from 'astro';
 
 const AIRLABS_API = 'https://airlabs.co/api/v9';
 
-const CABIN_MULTIPLIER: Record<string, number> = {
-  economy: 1,
-  premium_economy: 1.6,
-  business: 3.2,
-  first: 5.5,
+const AIRLINES: Record<string, string> = {
+  'AA': 'American Airlines', 'UA': 'United Airlines', 'DL': 'Delta Air Lines',
+  'BA': 'British Airways', 'LH': 'Lufthansa', 'AF': 'Air France',
+  'EK': 'Emirates', 'QR': 'Qatar Airways', 'TK': 'Turkish Airlines',
+  'SQ': 'Singapore Airlines', 'EY': 'Etihad Airways', 'QF': 'Qantas',
+  'CX': 'Cathay Pacific', 'NH': 'ANA', 'KE': 'Korean Air', 'KL': 'KLM',
+  'WN': 'Southwest Airlines', 'B6': 'JetBlue Airways', 'SK': 'SAS',
+  'OS': 'Austrian Airlines', 'IB': 'Iberia', 'AZ': 'ITA Airways',
+  'LX': 'Swiss', 'VS': 'Virgin Atlantic', 'AC': 'Air Canada',
+  'TP': 'TAP Air Portugal', 'AY': 'Finnair', 'SN': 'Brussels Airlines',
+  'TG': 'Thai Airways', 'MH': 'Malaysia Airlines', 'GA': 'Garuda Indonesia',
+  'CI': 'China Airlines', 'BR': 'EVA Air', 'JL': 'Japan Airlines',
+  'AI': 'Air India', 'PK': 'Pakistan International Airlines',
+  'MS': 'EgyptAir', 'SV': 'Saudia', 'GF': 'Gulf Air',
+  'WY': 'Oman Air', 'RJ': 'Royal Jordanian', 'ME': 'Middle East Airlines',
+  'UL': 'SriLankan Airlines', 'FJ': 'Fiji Airways',
 };
 
 const AIRLINE_TIER: Record<string, number> = {
@@ -16,11 +27,13 @@ const AIRLINE_TIER: Record<string, number> = {
   'DL': 1.1, 'WN': 0.9, 'B6': 0.9, 'SK': 1.0, 'OS': 1.1,
 };
 
-const AIRPORT_COORDS: Record<string, { lat: number; lon: number; city: string; name: string }> = {
+const AIRPORTS: Record<string, { lat: number; lon: number; city: string; name: string }> = {
   JFK: { lat: 40.6413, lon: -73.7781, city: 'New York', name: 'John F. Kennedy Intl' },
   LAX: { lat: 33.9425, lon: -118.4081, city: 'Los Angeles', name: 'Los Angeles Intl' },
   LHR: { lat: 51.4700, lon: -0.4543, city: 'London', name: 'Heathrow' },
+  LGW: { lat: 51.1537, lon: -0.1821, city: 'London', name: 'Gatwick' },
   CDG: { lat: 49.0097, lon: 2.5479, city: 'Paris', name: 'Charles de Gaulle' },
+  ORY: { lat: 48.7233, lon: 2.3794, city: 'Paris', name: 'Orly' },
   DXB: { lat: 25.2532, lon: 55.3657, city: 'Dubai', name: 'Dubai Intl' },
   SIN: { lat: 1.3644, lon: 103.9915, city: 'Singapore', name: 'Changi' },
   NRT: { lat: 35.7720, lon: 140.3929, city: 'Tokyo', name: 'Narita Intl' },
@@ -55,38 +68,103 @@ const AIRPORT_COORDS: Record<string, { lat: number; lon: number; city: string; n
   ISB: { lat: 33.6161, lon: 73.0991, city: 'Islamabad', name: 'Islamabad Intl' },
   MLE: { lat: 4.1918, lon: 73.5290, city: 'Malé', name: 'Velana Intl' },
   IAD: { lat: 38.9531, lon: -77.4565, city: 'Washington', name: 'Washington Dulles' },
+  DFW: { lat: 32.8998, lon: -97.0403, city: 'Dallas', name: 'Dallas/Fort Worth' },
+  DEN: { lat: 39.8561, lon: -104.6737, city: 'Denver', name: 'Denver Intl' },
+  BOS: { lat: 42.3656, lon: -71.0096, city: 'Boston', name: 'Logan Intl' },
+  EWR: { lat: 40.6895, lon: -74.1745, city: 'Newark', name: 'Newark Liberty' },
+  MXP: { lat: 45.6306, lon: 8.7281, city: 'Milan', name: 'Malpensa' },
+  BCN: { lat: 41.2974, lon: 2.0833, city: 'Barcelona', name: 'El Prat' },
+  LIS: { lat: 38.7756, lon: -9.1354, city: 'Lisbon', name: 'Humberto Delgado' },
+  DUB: { lat: 53.4264, lon: -6.2499, city: 'Dublin', name: 'Dublin Airport' },
+  CPH: { lat: 55.6181, lon: 12.6561, city: 'Copenhagen', name: 'Copenhagen Airport' },
+  VIE: { lat: 48.1103, lon: 16.5697, city: 'Vienna', name: 'Vienna Intl' },
+  BRU: { lat: 50.9014, lon: 4.4844, city: 'Brussels', name: 'Brussels Airport' },
+  ATH: { lat: 37.9364, lon: 23.9445, city: 'Athens', name: 'Athens Intl' },
+  PRG: { lat: 50.1008, lon: 14.2600, city: 'Prague', name: "Vaclav Havel" },
+  WAW: { lat: 52.1657, lon: 20.9671, city: 'Warsaw', name: 'Chopin' },
+  BUD: { lat: 47.4298, lon: 19.2611, city: 'Budapest', name: 'Budapest Liszt' },
+  SVO: { lat: 55.9726, lon: 37.4146, city: 'Moscow', name: 'Sheremetyevo' },
+  ADD: { lat: 8.9778, lon: 38.7997, city: 'Addis Ababa', name: 'Bole Intl' },
+  NBO: { lat: -1.3192, lon: 36.9278, city: 'Nairobi', name: 'Jomo Kenyatta Intl' },
+  LOS: { lat: 6.5774, lon: 3.3212, city: 'Lagos', name: 'Murtala Muhammed' },
+  ACC: { lat: 5.6052, lon: -0.1668, city: 'Accra', name: 'Kotoka Intl' },
+  CMN: { lat: 33.3675, lon: -7.5900, city: 'Casablanca', name: 'Mohammed V Intl' },
+  TUN: { lat: 36.8510, lon: 10.2272, city: 'Tunis', name: 'Tunis-Carthage' },
+  GIG: { lat: -22.8100, lon: -43.2505, city: 'Rio de Janeiro', name: 'Galeao Intl' },
+  EZE: { lat: -34.8222, lon: -58.5358, city: 'Buenos Aires', name: 'Ministro Pistarini' },
+  SCL: { lat: -33.3930, lon: -70.7858, city: 'Santiago', name: 'Arturo Merino Benitez' },
+  BOG: { lat: 4.7016, lon: -74.1469, city: 'Bogota', name: 'El Dorado Intl' },
+  LIM: { lat: -12.0219, lon: -77.1143, city: 'Lima', name: 'Jorge Chavez Intl' },
+  PTY: { lat: 9.0714, lon: -79.3835, city: 'Panama City', name: 'Tocumen Intl' },
+  MEL: { lat: -37.6690, lon: 144.8410, city: 'Melbourne', name: 'Melbourne Airport' },
+  AKL: { lat: -37.0082, lon: 174.7850, city: 'Auckland', name: 'Auckland Airport' },
+  PEK: { lat: 40.0799, lon: 116.6031, city: 'Beijing', name: 'Beijing Capital' },
+  PVG: { lat: 31.1443, lon: 121.8083, city: 'Shanghai', name: 'Pudong' },
+  TPE: { lat: 25.0777, lon: 121.2325, city: 'Taipei', name: 'Taoyuan Intl' },
+  KUL: { lat: 2.7456, lon: 101.7099, city: 'Kuala Lumpur', name: 'Kuala Lumpur Intl' },
+  CGK: { lat: -6.1256, lon: 106.6558, city: 'Jakarta', name: 'Soekarno-Hatta' },
+  MNL: { lat: 14.5086, lon: 121.0194, city: 'Manila', name: 'Ninoy Aquino Intl' },
+  BLR: { lat: 13.1986, lon: 77.7066, city: 'Bangalore', name: 'Kempegowda Intl' },
+  SGN: { lat: 10.8188, lon: 106.6520, city: 'Ho Chi Minh City', name: 'Tan Son Nhat' },
+  HAN: { lat: 21.2212, lon: 105.8072, city: 'Hanoi', name: 'Noi Bai Intl' },
+  CPT: { lat: -33.9715, lon: 18.6021, city: 'Cape Town', name: 'Cape Town Intl' },
+  KTM: { lat: 27.6966, lon: 85.3591, city: 'Kathmandu', name: 'Tribhuvan Intl' },
+  DAC: { lat: 23.8432, lon: 90.3978, city: 'Dhaka', name: 'Shahjalal Intl' },
+  CMB: { lat: 7.1808, lon: 79.8841, city: 'Colombo', name: 'Bandaranaike Intl' },
+  LHE: { lat: 31.5216, lon: 74.4036, city: 'Lahore', name: 'Allama Iqbal Intl' },
+  ALA: { lat: 43.3521, lon: 77.0405, city: 'Almaty', name: 'Almaty Intl' },
+  TAS: { lat: 41.2579, lon: 69.2812, city: 'Tashkent', name: 'Tashkent Intl' },
+  GYD: { lat: 40.4675, lon: 50.0467, city: 'Baku', name: 'Heydar Aliyev Intl' },
+  BAH: { lat: 26.2708, lon: 50.6336, city: 'Bahrain', name: 'Bahrain Intl' },
+  KWI: { lat: 29.2267, lon: 47.9689, city: 'Kuwait City', name: 'Kuwait Intl' },
+  MCT: { lat: 23.5933, lon: 58.2844, city: 'Muscat', name: 'Muscat Intl' },
+  AMM: { lat: 31.7226, lon: 35.9932, city: 'Amman', name: 'Queen Alia Intl' },
+  TLV: { lat: 32.0055, lon: 34.8854, city: 'Tel Aviv', name: 'Ben Gurion' },
+  BEY: { lat: 33.8209, lon: 35.4884, city: 'Beirut', name: 'Rafic Hariri Intl' },
+  CCS: { lat: 10.6012, lon: -66.9913, city: 'Caracas', name: 'Simon Bolivar Intl' },
+  UIO: { lat: -0.1292, lon: -78.3575, city: 'Quito', name: 'Mariscal Sucre Intl' },
+  MDE: { lat: 6.1645, lon: -75.4231, city: 'Medellin', name: 'Jose Maria Cordova' },
+  CUN: { lat: 21.0365, lon: -86.8770, city: 'Cancun', name: 'Cancun Intl' },
+  MEX: { lat: 19.4363, lon: -99.0721, city: 'Mexico City', name: 'Mexico City Intl' },
+  CLT: { lat: 35.2140, lon: -80.9431, city: 'Charlotte', name: 'Charlotte Douglas' },
+  PHX: { lat: 33.4373, lon: -112.0078, city: 'Phoenix', name: 'Sky Harbor' },
+  IAH: { lat: 29.9844, lon: -95.3414, city: 'Houston', name: 'George Bush Intercontinental' },
+  MSP: { lat: 44.8848, lon: -93.2223, city: 'Minneapolis', name: 'Minneapolis-Saint Paul' },
+  DTW: { lat: 42.2124, lon: -83.3534, city: 'Detroit', name: 'Detroit Metro' },
+  PHL: { lat: 39.8729, lon: -75.2437, city: 'Philadelphia', name: 'Philadelphia Intl' },
+  BWI: { lat: 39.1754, lon: -76.6684, city: 'Baltimore', name: 'Baltimore/Washington' },
+  SLC: { lat: 40.7884, lon: -111.9778, city: 'Salt Lake City', name: 'Salt Lake City Intl' },
+  SAN: { lat: 32.7338, lon: -117.1933, city: 'San Diego', name: 'San Diego Intl' },
+  HNL: { lat: 21.3187, lon: -157.9224, city: 'Honolulu', name: 'Daniel K. Inouye Intl' },
+  YVR: { lat: 49.1947, lon: -123.1792, city: 'Vancouver', name: 'Vancouver Intl' },
+  YUL: { lat: 45.4657, lon: -73.7440, city: 'Montreal', name: 'Montreal-Trudeau' },
+  PDX: { lat: 45.5898, lon: -122.5951, city: 'Portland', name: 'Portland Intl' },
+  TPAT: { lat: 27.9756, lon: -82.5333, city: 'Tampa', name: 'Tampa Intl' },
+  PEW: { lat: 33.9936, lon: 71.5146, city: 'Peshawar', name: 'Bacha Khan Intl' },
+  OPO: { lat: 41.2481, lon: -8.6814, city: 'Porto', name: 'Porto Airport' },
+  ARN: { lat: 59.6498, lon: 17.9238, city: 'Stockholm', name: 'Arlanda' },
+  HEL: { lat: 60.3172, lon: 24.9633, city: 'Helsinki', name: 'Helsinki-Vantaa' },
+  OSL: { lat: 60.1976, lon: 11.1004, city: 'Oslo', name: 'Oslo Gardermoen' },
+  LED: { lat: 59.8003, lon: 30.2625, city: 'St. Petersburg', name: 'Pulkovo' },
+  SAW: { lat: 40.8986, lon: 29.3092, city: 'Istanbul', name: 'Sabiha Gokcen' },
+  DSS: { lat: 14.7397, lon: -17.4902, city: 'Dakar', name: 'Blaise Diagne Intl' },
+  MXP: { lat: 45.6306, lon: 8.7281, city: 'Milan', name: 'Malpensa' },
+  WLG: { lat: -41.3272, lon: 174.8053, city: 'Wellington', name: 'Wellington Intl' },
+  BNE: { lat: -27.3842, lon: 153.1175, city: 'Brisbane', name: 'Brisbane Airport' },
+  PER: { lat: -31.9403, lon: 115.9670, city: 'Perth', name: 'Perth Airport' },
 };
 
-const AIRLINE_NAMES: Array<{ iata: string; name: string }> = [
-  { iata: 'AA', name: 'American Airlines' },
-  { iata: 'UA', name: 'United Airlines' },
-  { iata: 'DL', name: 'Delta Air Lines' },
-  { iata: 'BA', name: 'British Airways' },
-  { iata: 'LH', name: 'Lufthansa' },
-  { iata: 'AF', name: 'Air France' },
-  { iata: 'EK', name: 'Emirates' },
-  { iata: 'QR', name: 'Qatar Airways' },
-  { iata: 'TK', name: 'Turkish Airlines' },
-  { iata: 'SQ', name: 'Singapore Airlines' },
-  { iata: 'EY', name: 'Etihad Airways' },
-  { iata: 'QF', name: 'Qantas' },
-  { iata: 'CX', name: 'Cathay Pacific' },
-  { iata: 'NH', name: 'ANA' },
-  { iata: 'KE', name: 'Korean Air' },
-  { iata: 'KL', name: 'KLM' },
-  { iata: 'WN', name: 'Southwest Airlines' },
-  { iata: 'B6', name: 'JetBlue Airways' },
-  { iata: 'SK', name: 'SAS' },
-  { iata: 'OS', name: 'Austrian Airlines' },
-];
+function getAirlineName(iata: string): string {
+  return AIRLINES[iata] || 'Unknown Airline';
+}
 
 function estimatePrice(distanceKm: number, airlineIata: string, cabinClass: string): number {
   const baseFarePerKm = 0.04;
   let base = distanceKm * baseFarePerKm;
   base = Math.max(base, 45);
-  const tierMultiplier = AIRLINE_TIER[airlineIata] || 1.0;
-  const cabinMultiplier = CABIN_MULTIPLIER[cabinClass] || 1;
-  const estimated = base * tierMultiplier * cabinMultiplier;
+  const tier = AIRLINE_TIER[airlineIata] || 1.0;
+  const cabin: Record<string, number> = { economy: 1, premium_economy: 1.6, business: 3.2, first: 5.5 };
+  const estimated = base * tier * (cabin[cabinClass] || 1);
   const jitter = 1 + (Math.random() * 0.18 - 0.09);
   return Math.round(estimated * jitter);
 }
@@ -95,37 +173,59 @@ function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: numbe
   const R = 6371;
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
   const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos((lat1 * Math.PI) / 180) *
-    Math.cos((lat2 * Math.PI) / 180) *
-    Math.sin(dLon / 2) ** 2;
+  const a = Math.sin(dLat / 2) ** 2 +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-}
-
-function getDistance(origin: string, destination: string): number {
-  const o = AIRPORT_COORDS[origin];
-  const d = AIRPORT_COORDS[destination];
-  if (o && d) return haversineDistance(o.lat, o.lon, d.lat, d.lon);
-  return 5000;
 }
 
 function formatTime(iso: string): string {
   if (!iso) return '';
-  const d = new Date(iso);
-  const h = String(d.getUTCHours()).padStart(2, '0');
-  const m = String(d.getUTCMinutes()).padStart(2, '0');
-  return `${h}:${m}`;
+  if (/^\d{2}:\d{2}$/.test(iso)) return iso;
+  try {
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return '';
+    const h = String(d.getUTCHours()).padStart(2, '0');
+    const m = String(d.getUTCMinutes()).padStart(2, '0');
+    return `${h}:${m}`;
+  } catch { return ''; }
 }
 
 function formatDuration(mins: number): string {
-  const h = Math.floor(mins / 60);
-  const m = mins % 60;
-  return `${h}h ${m}m`;
+  return `${Math.floor(mins / 60)}h ${mins % 60}m`;
 }
 
-function getAirlineLogo(iata: string): string {
-  return `https://www.google.com/s2/favicons?domain=${iata.toLowerCase()}.com&sz=64`;
+function makeOffer(
+  airlineIata: string,
+  origin: string,
+  destination: string,
+  depTime: string,
+  arrTime: string,
+  durationMins: number,
+  stops: number,
+  price: number,
+  cabinClass: string,
+  flightNum?: string,
+): any {
+  const oInfo = AIRPORTS[origin] || { city: origin, name: origin };
+  const dInfo = AIRPORTS[destination] || { city: destination, name: destination };
+  return {
+    id: `fl-${airlineIata}-${flightNum || ''}-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`,
+    origin,
+    destination,
+    originName: oInfo.name,
+    destinationName: dInfo.name,
+    departureTime: formatTime(depTime),
+    arrivalTime: formatTime(arrTime),
+    airline: getAirlineName(airlineIata),
+    airlineIata,
+    airlineLogo: `https://www.google.com/s2/favicons?domain=${airlineIata.toLowerCase()}.com&sz=64`,
+    flightNumber: flightNum || `${airlineIata}${100 + Math.floor(Math.random() * 9900)}`,
+    duration: formatDuration(durationMins),
+    stops,
+    price,
+    currency: 'USD',
+    cabinClass,
+  };
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -141,82 +241,72 @@ export const POST: APIRoute = async ({ request }) => {
     }
 
     const apiKey = import.meta.env.AIRLABS_API_KEY;
+    const distance = haversineDistance(
+      AIRPORTS[origin]?.lat ?? 0, AIRPORTS[origin]?.lon ?? 0,
+      AIRPORTS[destination]?.lat ?? 0, AIRPORTS[destination]?.lon ?? 0,
+    ) || 5000;
+    const cabin = cabinClass || 'economy';
 
-    const distance = getDistance(origin, destination);
     let offers: any[] = [];
 
-    // Step 1: If API key exists, try to get real fares from AirLabs
-    let realPrices: Record<string, number> = {};
     if (apiKey) {
+      // Try AirLabs flights endpoint
       try {
-        const faresRes = await fetch(
-          `${AIRLABS_API}/fares?api_key=${apiKey}&dep_iata=${origin}&arr_iata=${destination}`
-        );
-        if (faresRes.ok) {
-          const faresData = await faresRes.json();
-          if (faresData.response) {
-            for (const fare of faresData.response) {
-              if (fare.airline_iata && fare.price) {
-                realPrices[fare.airline_iata] = fare.price;
-              }
-            }
-          }
-        }
-      } catch (e) {
-        console.error('AirLabs fares error:', e);
-      }
-
-      // Step 2: Get real flight schedules from AirLabs
-      try {
-        const flightsRes = await fetch(
+        const res = await fetch(
           `${AIRLABS_API}/flights?api_key=${apiKey}&dep_iata=${origin}&arr_iata=${destination}&limit=20`
         );
-        if (flightsRes.ok) {
-          const flightsData = await flightsRes.json();
-          if (flightsData.response && flightsData.response.length > 0) {
-            offers = flightsData.response.map((f: any, index: number) => {
-              const airlineIata = f.airline_iata || '';
-              const airlineName = f.airline_name || 'Unknown Airline';
-              const depTime = f.departure_time || '';
-              const arrTime = f.arrival_time || '';
-
-              const durationMins = depTime && arrTime
-                ? Math.round((new Date(arrTime).getTime() - new Date(depTime).getTime()) / 60000)
-                : 180;
-
-              const price = realPrices[airlineIata]
-                || estimatePrice(distance, airlineIata, cabinClass || 'economy');
+        if (res.ok) {
+          const data = await res.json();
+          const flights = data?.response;
+          if (Array.isArray(flights) && flights.length > 0) {
+            offers = flights.map((f: any, i: number) => {
+              const iata = f.airline_iata || f.airline?.iata || '';
+              const name = f.airline_name || f.airline?.name || getAirlineName(iata);
+              const dep = f.departure_time || f.dep_time || '';
+              const arr = f.arrival_time || f.arr_time || '';
+              const mins = dep && arr
+                ? Math.round((new Date(arr).getTime() - new Date(dep).getTime()) / 60000)
+                : Math.round((distance / 850) * 60);
+              const price = estimatePrice(distance, iata, cabin);
 
               return {
-                id: `airlabs-${f.flight_iata || index}-${Date.now()}`,
+                id: `al-${f.flight_iata || i}-${Date.now()}`,
                 origin: f.dep_iata || origin,
                 destination: f.arr_iata || destination,
-                originName: f.dep_city || origin,
-                destinationName: f.arr_city || destination,
-                departureTime: formatTime(depTime),
-                arrivalTime: formatTime(arrTime),
-                airline: airlineName,
-                airlineIata: airlineIata,
-                airlineLogo: getAirlineLogo(airlineIata),
-                flightNumber: f.flight_iata || `${airlineIata}${Math.floor(1000 + Math.random() * 9000)}`,
-                duration: formatDuration(durationMins),
+                originName: AIRPORTS[f.dep_iata || origin]?.name || origin,
+                destinationName: AIRPORTS[f.arr_iata || destination]?.name || destination,
+                departureTime: formatTime(dep),
+                arrivalTime: formatTime(arr),
+                airline: name,
+                airlineIata: iata,
+                airlineLogo: `https://www.google.com/s2/favicons?domain=${iata.toLowerCase()}.com&sz=64`,
+                flightNumber: f.flight_iata || `${iata}${100 + Math.floor(Math.random() * 9900)}`,
+                duration: formatDuration(mins),
                 stops: f.stops || 0,
                 price,
                 currency: 'USD',
-                cabinClass: cabinClass || 'economy',
+                cabinClass: cabin,
               };
             });
           }
         }
       } catch (e) {
-        console.error('AirLabs flights error:', e);
+        console.error('AirLabs API error:', e);
       }
     }
 
-    // Step 3: If no results from API, generate fallback flights
-    if (offers.length === 0) {
-      offers = generateFallbackFlights(origin, destination, distance, cabinClass || 'economy', realPrices);
-    }
+    // Always generate fallback flights too, mix them in
+    const fallbacks = generateFallbackFlights(origin, destination, distance, cabin);
+    offers = [...offers, ...fallbacks];
+
+    // Remove duplicates by airline IATA + departure time
+    const seen = new Set<string>();
+    offers = offers.filter(o => {
+      const key = `${o.airlineIata}-${o.departureTime}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
 
     offers.sort((a: any, b: any) => a.price - b.price);
 
@@ -238,46 +328,32 @@ function generateFallbackFlights(
   destination: string,
   distance: number,
   cabinClass: string,
-  realPrices: Record<string, number> = {}
 ): any[] {
-  const originInfo = AIRPORT_COORDS[origin] || { city: origin, name: origin };
-  const destInfo = AIRPORT_COORDS[destination] || { city: destination, name: destination };
-
-  const shuffled = [...AIRLINE_NAMES].sort(() => Math.random() - 0.5);
-  const selectedAirlines = shuffled.slice(0, 4 + Math.floor(Math.random() * 3));
-
+  const airlineIatas = Object.keys(AIRLINES);
+  const shuffled = airlineIatas.sort(() => Math.random() - 0.5);
+  const selected = shuffled.slice(0, 5 + Math.floor(Math.random() * 3));
   const flightMins = Math.round((distance / 850) * 60);
 
-  return selectedAirlines.map((airline, index) => {
+  return selected.map((iata, index) => {
     const depHour = 6 + Math.floor(Math.random() * 16);
     const depMin = Math.floor(Math.random() * 60);
-
     const isOneStop = distance > 4000 && Math.random() < 0.3;
     const totalMins = isOneStop ? flightMins + 60 + Math.floor(Math.random() * 60) : flightMins;
-
     const arrTotalMins = depHour * 60 + depMin + totalMins;
     const arrHour = Math.floor(arrTotalMins / 60) % 24;
     const arrMin = arrTotalMins % 60;
+    const price = estimatePrice(distance, iata, cabinClass);
 
-    const price = realPrices[airline.iata] || estimatePrice(distance, airline.iata, cabinClass);
-
-    return {
-      id: `fallback-${airline.iata}-${index}-${Date.now()}`,
+    return makeOffer(
+      iata,
       origin,
       destination,
-      originName: originInfo.name,
-      destinationName: destInfo.name,
-      departureTime: `${String(depHour).padStart(2, '0')}:${String(depMin).padStart(2, '0')}`,
-      arrivalTime: `${String(arrHour).padStart(2, '0')}:${String(arrMin).padStart(2, '0')}`,
-      airline: airline.name,
-      airlineIata: airline.iata,
-      airlineLogo: getAirlineLogo(airline.iata),
-      flightNumber: `${airline.iata}${100 + Math.floor(Math.random() * 9900)}`,
-      duration: formatDuration(totalMins),
-      stops: isOneStop ? 1 : 0,
+      `${String(depHour).padStart(2, '0')}:${String(depMin).padStart(2, '0')}`,
+      `${String(arrHour).padStart(2, '0')}:${String(arrMin).padStart(2, '0')}`,
+      totalMins,
+      isOneStop ? 1 : 0,
       price,
-      currency: 'USD',
       cabinClass,
-    };
+    );
   });
 }

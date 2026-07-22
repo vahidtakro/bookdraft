@@ -6,31 +6,147 @@ interface FlightSearchProps {
   onFlightSelect: (flight: FlightOffer) => void;
 }
 
-const POPULAR_AIRPORTS = [
+const AIRPORTS = [
+  // North America
   { iata: 'JFK', name: 'John F. Kennedy Intl', city: 'New York' },
   { iata: 'LAX', name: 'Los Angeles Intl', city: 'Los Angeles' },
+  { iata: 'ORD', name: "O'Hare Intl", city: 'Chicago' },
+  { iata: 'ATL', name: 'Hartsfield-Jackson', city: 'Atlanta' },
+  { iata: 'DFW', name: 'Dallas/Fort Worth', city: 'Dallas' },
+  { iata: 'DEN', name: 'Denver Intl', city: 'Denver' },
+  { iata: 'SFO', name: 'San Francisco Intl', city: 'San Francisco' },
+  { iata: 'SEA', name: 'Seattle-Tacoma Intl', city: 'Seattle' },
+  { iata: 'MIA', name: 'Miami Intl', city: 'Miami' },
+  { iata: 'BOS', name: 'Logan Intl', city: 'Boston' },
+  { iata: 'IAD', name: 'Washington Dulles', city: 'Washington' },
+  { iata: 'DCA', name: 'Reagan National', city: 'Washington' },
+  { iata: 'PHX', name: 'Sky Harbor', city: 'Phoenix' },
+  { iata: 'IAH', name: 'George Bush Intercontinental', city: 'Houston' },
+  { iata: 'MSP', name: 'Minneapolis-Saint Paul', city: 'Minneapolis' },
+  { iata: 'DTW', name: 'Detroit Metro', city: 'Detroit' },
+  { iata: 'PHL', name: 'Philadelphia Intl', city: 'Philadelphia' },
+  { iata: 'CLT', name: 'Charlotte Douglas', city: 'Charlotte' },
+  { iata: 'EWR', name: 'Newark Liberty', city: 'Newark' },
+  { iata: 'SLC', name: 'Salt Lake City Intl', city: 'Salt Lake City' },
+  { iata: 'SAN', name: 'San Diego Intl', city: 'San Diego' },
+  { iata: 'BWI', name: 'Baltimore/Washington', city: 'Baltimore' },
+  { iata: 'TPA', name: 'Tampa Intl', city: 'Tampa' },
+  { iata: 'PDX', name: 'Portland Intl', city: 'Portland' },
+  { iata: 'STL', name: 'St. Louis Lambert', city: 'St. Louis' },
+  { iata: 'HNL', name: 'Daniel K. Inouye Intl', city: 'Honolulu' },
+  { iata: 'YYZ', name: 'Toronto Pearson', city: 'Toronto' },
+  { iata: 'YVR', name: 'Vancouver Intl', city: 'Vancouver' },
+  { iata: 'YUL', name: 'Montréal-Trudeau', city: 'Montreal' },
+  { iata: 'MEX', name: 'Mexico City Intl', city: 'Mexico City' },
+  { iata: 'CUN', name: 'Cancún Intl', city: 'Cancún' },
+  // Europe
   { iata: 'LHR', name: 'Heathrow', city: 'London' },
+  { iata: 'LGW', name: 'Gatwick', city: 'London' },
   { iata: 'CDG', name: 'Charles de Gaulle', city: 'Paris' },
-  { iata: 'DXB', name: 'Dubai Intl', city: 'Dubai' },
-  { iata: 'SIN', name: 'Changi', city: 'Singapore' },
-  { iata: 'HND', name: 'Haneda', city: 'Tokyo' },
-  { iata: 'IST', name: 'Istanbul', city: 'Istanbul' },
-  { iata: 'FRA', name: 'Frankfurt', city: 'Frankfurt' },
+  { iata: 'ORY', name: 'Orly', city: 'Paris' },
+  { iata: 'FRA', name: 'Frankfurt Airport', city: 'Frankfurt' },
+  { iata: 'MUC', name: 'Munich Airport', city: 'Munich' },
   { iata: 'AMS', name: 'Schiphol', city: 'Amsterdam' },
+  { iata: 'MAD', name: 'Barajas', city: 'Madrid' },
+  { iata: 'BCN', name: 'El Prat', city: 'Barcelona' },
+  { iata: 'FCO', name: 'Fiumicino', city: 'Rome' },
+  { iata: 'MXP', name: 'Malpensa', city: 'Milan' },
+  { iata: 'IST', name: 'Istanbul Airport', city: 'Istanbul' },
+  { iata: 'SAW', name: 'Sabiha Gökçen', city: 'Istanbul' },
+  { iata: 'ZRH', name: 'Zurich Airport', city: 'Zurich' },
+  { iata: 'VIE', name: 'Vienna Intl', city: 'Vienna' },
+  { iata: 'BRU', name: 'Brussels Airport', city: 'Brussels' },
+  { iata: 'CPH', name: 'Copenhagen Airport', city: 'Copenhagen' },
+  { iata: 'OSL', name: 'Oslo Gardermoen', city: 'Oslo' },
+  { iata: 'ARN', name: 'Arlanda', city: 'Stockholm' },
+  { iata: 'HEL', name: 'Helsinki-Vantaa', city: 'Helsinki' },
+  { iata: 'DUB', name: 'Dublin Airport', city: 'Dublin' },
+  { iata: 'LIS', name: 'Humberto Delgado', city: 'Lisbon' },
+  { iata: 'OPO', name: 'Porto Airport', city: 'Porto' },
+  { iata: 'ATH', name: 'Athens Intl', city: 'Athens' },
+  { iata: 'WAW', name: 'Chopin', city: 'Warsaw' },
+  { iata: 'PRG', name: 'Václav Havel', city: 'Prague' },
+  { iata: 'BUD', name: 'Budapest Liszt', city: 'Budapest' },
+  { iata: 'SVO', name: 'Sheremetyevo', city: 'Moscow' },
+  { iata: 'LED', name: 'Pulkovo', city: 'St. Petersburg' },
+  // Middle East
+  { iata: 'DXB', name: 'Dubai Intl', city: 'Dubai' },
   { iata: 'DOH', name: 'Hamad Intl', city: 'Doha' },
   { iata: 'AUH', name: 'Abu Dhabi Intl', city: 'Abu Dhabi' },
-  { iata: 'MIA', name: 'Miami Intl', city: 'Miami' },
-  { iata: 'SFO', name: 'San Francisco Intl', city: 'San Francisco' },
+  { iata: 'RUH', name: 'King Khalid Intl', city: 'Riyadh' },
+  { iata: 'JED', name: 'King Abdulaziz Intl', city: 'Jeddah' },
+  { iata: 'BAH', name: 'Bahrain Intl', city: 'Bahrain' },
+  { iata: 'MCT', name: 'Muscat Intl', city: 'Muscat' },
+  { iata: 'KWI', name: 'Kuwait Intl', city: 'Kuwait City' },
+  { iata: 'AMM', name: 'Queen Alia Intl', city: 'Amman' },
+  { iata: 'BEY', name: 'Rafic Hariri Intl', city: 'Beirut' },
+  { iata: 'TLV', name: 'Ben Gurion', city: 'Tel Aviv' },
+  // Asia
+  { iata: 'SIN', name: 'Changi', city: 'Singapore' },
+  { iata: 'HND', name: 'Haneda', city: 'Tokyo' },
+  { iata: 'NRT', name: 'Narita Intl', city: 'Tokyo' },
+  { iata: 'ICN', name: 'Incheon Intl', city: 'Seoul' },
+  { iata: 'PEK', name: 'Beijing Capital', city: 'Beijing' },
+  { iata: 'PKX', name: 'Beijing Daxing', city: 'Beijing' },
+  { iata: 'PVG', name: 'Pudong', city: 'Shanghai' },
+  { iata: 'HKG', name: 'Hong Kong Intl', city: 'Hong Kong' },
+  { iata: 'TPE', name: 'Taoyuan Intl', city: 'Taipei' },
+  { iata: 'BKK', name: 'Suvarnabhumi', city: 'Bangkok' },
+  { iata: 'KUL', name: 'Kuala Lumpur Intl', city: 'Kuala Lumpur' },
+  { iata: 'CGK', name: 'Soekarno-Hatta', city: 'Jakarta' },
+  { iata: 'MNL', name: 'Ninoy Aquino Intl', city: 'Manila' },
   { iata: 'DEL', name: 'Indira Gandhi Intl', city: 'Delhi' },
   { iata: 'BOM', name: 'Chhatrapati Shivaji', city: 'Mumbai' },
+  { iata: 'BLR', name: 'Kempegowda Intl', city: 'Bangalore' },
+  { iata: 'MAA', name: 'Chennai Intl', city: 'Chennai' },
+  { iata: 'CCU', name: 'Netaji Subhas Chandra Bose', city: 'Kolkata' },
+  { iata: 'HYD', name: 'Rajiv Gandhi Intl', city: 'Hyderabad' },
+  { iata: 'CMB', name: 'Bandaranaike Intl', city: 'Colombo' },
+  { iata: 'KTM', name: 'Tribhuvan Intl', city: 'Kathmandu' },
+  { iata: 'DAC', name: 'Shahjalal Intl', city: 'Dhaka' },
+  { iata: 'SGN', name: 'Tan Son Nhat', city: 'Ho Chi Minh City' },
+  { iata: 'HAN', name: 'Noi Bai Intl', city: 'Hanoi' },
+  // Africa
+  { iata: 'JNB', name: 'O.R. Tambo Intl', city: 'Johannesburg' },
+  { iata: 'CPT', name: 'Cape Town Intl', city: 'Cape Town' },
   { iata: 'CAI', name: 'Cairo Intl', city: 'Cairo' },
-  { iata: 'JED', name: 'King Abdulaziz Intl', city: 'Jeddah' },
-  { iata: 'RUH', name: 'King Khalid Intl', city: 'Riyadh' },
+  { iata: 'CMN', name: 'Mohammed V Intl', city: 'Casablanca' },
+  { iata: 'ADD', name: 'Bole Intl', city: 'Addis Ababa' },
+  { iata: 'NBO', name: 'Jomo Kenyatta Intl', city: 'Nairobi' },
+  { iata: 'DSS', name: 'Blaise Diagne Intl', city: 'Dakar' },
+  { iata: 'LOS', name: 'Murtala Muhammed', city: 'Lagos' },
+  { iata: 'ACC', name: 'Kotoka Intl', city: 'Accra' },
+  { iata: 'TUN', name: 'Tunis-Carthage', city: 'Tunis' },
+  // South America
+  { iata: 'GRU', name: 'Guarulhos Intl', city: 'São Paulo' },
+  { iata: 'GIG', name: 'Galeão Intl', city: 'Rio de Janeiro' },
+  { iata: 'EZE', name: 'Ministro Pistarini', city: 'Buenos Aires' },
+  { iata: 'SCL', name: 'Arturo Merino Benítez', city: 'Santiago' },
+  { iata: 'BOG', name: 'El Dorado Intl', city: 'Bogotá' },
+  { iata: 'LIM', name: 'Jorge Chávez Intl', city: 'Lima' },
+  { iata: 'UIO', name: 'Mariscal Sucre Intl', city: 'Quito' },
+  { iata: 'PTY', name: 'Tocumen Intl', city: 'Panama City' },
+  { iata: 'MDE', name: 'José María Córdova', city: 'Medellín' },
+  { iata: 'CCS', name: 'Simón Bolívar Intl', city: 'Caracas' },
+  // Oceania
+  { iata: 'SYD', name: 'Kingsford Smith', city: 'Sydney' },
+  { iata: 'MEL', name: 'Melbourne Airport', city: 'Melbourne' },
+  { iata: 'BNE', name: 'Brisbane Airport', city: 'Brisbane' },
+  { iata: 'AKL', name: 'Auckland Airport', city: 'Auckland' },
+  { iata: 'PER', name: 'Perth Airport', city: 'Perth' },
+  { iata: 'WLG', name: 'Wellington Intl', city: 'Wellington' },
+  // Pakistan / Central Asia
   { iata: 'KHI', name: 'Jinnah Intl', city: 'Karachi' },
   { iata: 'ISB', name: 'Islamabad Intl', city: 'Islamabad' },
+  { iata: 'LHE', name: 'Allama Iqbal Intl', city: 'Lahore' },
+  { iata: 'PEW', name: 'Bacha Khan Intl', city: 'Peshawar' },
+  { iata: 'UET', name: 'Quetta Intl', city: 'Quetta' },
   { iata: 'MLE', name: 'Velana Intl', city: 'Malé' },
-  { iata: 'IAD', name: 'Washington Dulles', city: 'Washington' },
-  { iata: 'ORD', name: "O'Hare", city: 'Chicago' },
+  { iata: 'TAS', name: 'Tashkent Intl', city: 'Tashkent' },
+  { iata: 'ALA', name: 'Almaty Intl', city: 'Almaty' },
+  { iata: 'GYD', name: 'Heydar Aliyev Intl', city: 'Baku' },
+  { iata: 'TBS', name: 'Tbilisi Intl', city: 'Tbilisi' },
+  { iata: 'EVN', name: 'Zvartnots Intl', city: 'Yerevan' },
 ];
 
 export function FlightSearch({ onFlightSelect }: FlightSearchProps) {
@@ -49,13 +165,30 @@ export function FlightSearch({ onFlightSelect }: FlightSearchProps) {
   const [showDestDropdown, setShowDestDropdown] = useState(false);
 
   const filterAirports = (search: string) => {
-    if (!search) return POPULAR_AIRPORTS;
+    if (!search) return AIRPORTS.slice(0, 20);
     const s = search.toLowerCase();
-    return POPULAR_AIRPORTS.filter(
+    const matches = AIRPORTS.filter(
       a => a.iata.toLowerCase().includes(s) ||
            a.city.toLowerCase().includes(s) ||
            a.name.toLowerCase().includes(s)
     );
+    // If typed exactly 3 letters that looks like an IATA code and no match, offer it as a custom option
+    if (matches.length === 0 && /^[A-Za-z]{3}$/.test(search.trim())) {
+      const code = search.trim().toUpperCase();
+      return [{ iata: code, name: `${code} Airport`, city: code }];
+    }
+    return matches;
+  };
+
+  const handleSelectAirport = (
+    airport: { iata: string; name: string; city: string },
+    setSearch: (v: string) => void,
+    setCode: (v: string) => void,
+    setShow: (v: boolean) => void,
+  ) => {
+    setCode(airport.iata);
+    setSearch(`${airport.city} (${airport.iata})`);
+    setShow(false);
   };
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -90,11 +223,59 @@ export function FlightSearch({ onFlightSelect }: FlightSearchProps) {
     }
   };
 
+  const renderDropdown = (
+    search: string,
+    setSearch: (v: string) => void,
+    code: string,
+    setCode: (v: string) => void,
+    show: boolean,
+    setShow: (v: boolean) => void,
+    label: string,
+  ) => (
+    <div className="relative">
+      <label className="block text-sm font-medium text-gray-700 mb-2">{label}</label>
+      <input
+        type="text"
+        value={search}
+        onChange={e => {
+          setSearch(e.target.value);
+          setShow(true);
+          if (e.target.value.length === 0) setCode('');
+        }}
+        onFocus={() => setShow(true)}
+        onBlur={() => setTimeout(() => setShow(false), 200)}
+        placeholder="Type airport code or city name"
+        className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400"
+      />
+      {show && (
+        <div className="absolute z-20 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto">
+          {filterAirports(search).map(a => (
+            <button
+              key={a.iata}
+              type="button"
+              onMouseDown={e => e.preventDefault()}
+              onClick={() => handleSelectAirport(a, setSearch, setCode, setShow)}
+              className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3"
+            >
+              <span className="font-mono text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded shrink-0">{a.iata}</span>
+              <div className="min-w-0">
+                <div className="text-sm font-medium text-gray-900 truncate">{a.city}</div>
+                <div className="text-xs text-gray-500 truncate">{a.name}</div>
+              </div>
+            </button>
+          ))}
+          {filterAirports(search).length === 0 && (
+            <div className="px-4 py-3 text-sm text-gray-500">No airports found</div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="animate-fade-in">
       {!showResults ? (
         <>
-          {/* Hero */}
           <div className="text-center mb-10">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-3">
               Search Real Flights
@@ -105,104 +286,14 @@ export function FlightSearch({ onFlightSelect }: FlightSearchProps) {
             </p>
           </div>
 
-          {/* Search Form */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sm:p-8 max-w-4xl mx-auto">
             <form onSubmit={handleSearch} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {/* Origin */}
-                <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">From</label>
-                  <div className="relative">
-                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
-                    </svg>
-                    <input
-                      type="text"
-                      value={originSearch}
-                      onChange={e => {
-                        setOriginSearch(e.target.value);
-                        setShowOriginDropdown(true);
-                        if (e.target.value.length === 0) setOrigin('');
-                      }}
-                      onFocus={() => setShowOriginDropdown(true)}
-                      onBlur={() => setTimeout(() => setShowOriginDropdown(false), 200)}
-                      placeholder="City or airport code"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400"
-                    />
-                  </div>
-                  {showOriginDropdown && (
-                    <div className="absolute z-20 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                      {filterAirports(originSearch).map(airport => (
-                        <button
-                          key={airport.iata}
-                          type="button"
-                          onClick={() => {
-                            setOrigin(airport.iata);
-                            setOriginSearch(`${airport.city} (${airport.iata})`);
-                            setShowOriginDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3"
-                        >
-                          <span className="font-mono text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{airport.iata}</span>
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">{airport.city}</div>
-                            <div className="text-xs text-gray-500">{airport.name}</div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Destination */}
-                <div className="relative">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">To</label>
-                  <div className="relative">
-                    <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                    </svg>
-                    <input
-                      type="text"
-                      value={destSearch}
-                      onChange={e => {
-                        setDestSearch(e.target.value);
-                        setShowDestDropdown(true);
-                        if (e.target.value.length === 0) setDestination('');
-                      }}
-                      onFocus={() => setShowDestDropdown(true)}
-                      onBlur={() => setTimeout(() => setShowDestDropdown(false), 200)}
-                      placeholder="City or airport code"
-                      className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all text-gray-900 placeholder-gray-400"
-                    />
-                  </div>
-                  {showDestDropdown && (
-                    <div className="absolute z-20 top-full mt-1 w-full bg-white border border-gray-200 rounded-xl shadow-xl max-h-60 overflow-y-auto">
-                      {filterAirports(destSearch).map(airport => (
-                        <button
-                          key={airport.iata}
-                          type="button"
-                          onClick={() => {
-                            setDestination(airport.iata);
-                            setDestSearch(`${airport.city} (${airport.iata})`);
-                            setShowDestDropdown(false);
-                          }}
-                          className="w-full px-4 py-3 text-left hover:bg-blue-50 transition-colors flex items-center gap-3"
-                        >
-                          <span className="font-mono text-sm font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">{airport.iata}</span>
-                          <div>
-                            <div className="text-sm font-medium text-gray-900">{airport.city}</div>
-                            <div className="text-xs text-gray-500">{airport.name}</div>
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+                {renderDropdown(originSearch, setOriginSearch, origin, setOrigin, showOriginDropdown, setShowOriginDropdown, 'From')}
+                {renderDropdown(destSearch, setDestSearch, destination, setDestination, showDestDropdown, setShowDestDropdown, 'To')}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                {/* Departure Date */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Departure Date</label>
                   <input
@@ -214,7 +305,6 @@ export function FlightSearch({ onFlightSelect }: FlightSearchProps) {
                   />
                 </div>
 
-                {/* Passengers */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Passengers</label>
                   <select
@@ -228,7 +318,6 @@ export function FlightSearch({ onFlightSelect }: FlightSearchProps) {
                   </select>
                 </div>
 
-                {/* Cabin Class */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">Cabin Class</label>
                   <select
