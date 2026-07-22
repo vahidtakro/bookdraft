@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { FlightOffer, SearchParams } from '../lib/types';
+import { FlightResults } from './FlightResults';
 
 interface FlightSearchProps {
   onFlightSelect: (flight: FlightOffer) => void;

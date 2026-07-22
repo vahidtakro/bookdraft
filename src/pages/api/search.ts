@@ -142,81 +142,75 @@ export const POST: APIRoute = async ({ request }) => {
 
     const apiKey = import.meta.env.AIRLABS_API_KEY;
 
-    if (!apiKey) {
-      return new Response(JSON.stringify({ error: 'Flight API key not configured' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
-      });
-    }
-
     const distance = getDistance(origin, destination);
     let offers: any[] = [];
 
-    // Step 1: Try to get real fares from AirLabs
+    // Step 1: If API key exists, try to get real fares from AirLabs
     let realPrices: Record<string, number> = {};
-    try {
-      const faresRes = await fetch(
-        `${AIRLABS_API}/fares?api_key=${apiKey}&dep_iata=${origin}&arr_iata=${destination}`
-      );
-      if (faresRes.ok) {
-        const faresData = await faresRes.json();
-        if (faresData.response) {
-          for (const fare of faresData.response) {
-            if (fare.airline_iata && fare.price) {
-              realPrices[fare.airline_iata] = fare.price;
+    if (apiKey) {
+      try {
+        const faresRes = await fetch(
+          `${AIRLABS_API}/fares?api_key=${apiKey}&dep_iata=${origin}&arr_iata=${destination}`
+        );
+        if (faresRes.ok) {
+          const faresData = await faresRes.json();
+          if (faresData.response) {
+            for (const fare of faresData.response) {
+              if (fare.airline_iata && fare.price) {
+                realPrices[fare.airline_iata] = fare.price;
+              }
             }
           }
         }
+      } catch (e) {
+        console.error('AirLabs fares error:', e);
       }
-    } catch (e) {
-      console.error('AirLabs fares error:', e);
-    }
 
-    // Step 2: Get real flight schedules from AirLabs
-    try {
-      const flightsRes = await fetch(
-        `${AIRLABS_API}/flights?api_key=${apiKey}&dep_iata=${origin}&arr_iata=${destination}&limit=20`
-      );
-      if (flightsRes.ok) {
-        const flightsData = await flightsRes.json();
-        if (flightsData.response && flightsData.response.length > 0) {
-          offers = flightsData.response.map((f: any, index: number) => {
-            const airlineIata = f.airline_iata || '';
-            const airlineName = f.airline_name || 'Unknown Airline';
-            const depTime = f.departure_time || '';
-            const arrTime = f.arrival_time || '';
+      // Step 2: Get real flight schedules from AirLabs
+      try {
+        const flightsRes = await fetch(
+          `${AIRLABS_API}/flights?api_key=${apiKey}&dep_iata=${origin}&arr_iata=${destination}&limit=20`
+        );
+        if (flightsRes.ok) {
+          const flightsData = await flightsRes.json();
+          if (flightsData.response && flightsData.response.length > 0) {
+            offers = flightsData.response.map((f: any, index: number) => {
+              const airlineIata = f.airline_iata || '';
+              const airlineName = f.airline_name || 'Unknown Airline';
+              const depTime = f.departure_time || '';
+              const arrTime = f.arrival_time || '';
 
-            const durationMins = depTime && arrTime
-              ? Math.round((new Date(arrTime).getTime() - new Date(depTime).getTime()) / 60000)
-              : 180;
+              const durationMins = depTime && arrTime
+                ? Math.round((new Date(arrTime).getTime() - new Date(depTime).getTime()) / 60000)
+                : 180;
 
-            // Use real price if available, otherwise estimate
-            const price = realPrices[airlineIata]
-              || estimatePrice(distance, airlineIata, cabinClass || 'economy');
+              const price = realPrices[airlineIata]
+                || estimatePrice(distance, airlineIata, cabinClass || 'economy');
 
-            return {
-              id: `airlabs-${f.flight_iata || index}-${Date.now()}`,
-              origin: f.dep_iata || origin,
-              destination: f.arr_iata || destination,
-              originName: f.dep_city || origin,
-              destinationName: f.arr_city || destination,
-              departureTime: formatTime(depTime),
-              arrivalTime: formatTime(arrTime),
-              airline: airlineName,
-              airlineIata: airlineIata,
-              airlineLogo: getAirlineLogo(airlineIata),
-              flightNumber: f.flight_iata || `${airlineIata}${Math.floor(1000 + Math.random() * 9000)}`,
-              duration: formatDuration(durationMins),
-              stops: f.stops || 0,
-              price,
-              currency: 'USD',
-              cabinClass: cabinClass || 'economy',
-            };
-          });
+              return {
+                id: `airlabs-${f.flight_iata || index}-${Date.now()}`,
+                origin: f.dep_iata || origin,
+                destination: f.arr_iata || destination,
+                originName: f.dep_city || origin,
+                destinationName: f.arr_city || destination,
+                departureTime: formatTime(depTime),
+                arrivalTime: formatTime(arrTime),
+                airline: airlineName,
+                airlineIata: airlineIata,
+                airlineLogo: getAirlineLogo(airlineIata),
+                flightNumber: f.flight_iata || `${airlineIata}${Math.floor(1000 + Math.random() * 9000)}`,
+                duration: formatDuration(durationMins),
+                stops: f.stops || 0,
+                price,
+                currency: 'USD',
+                cabinClass: cabinClass || 'economy',
+              };
+            });
+          }
         }
+      } catch (e) {
+        console.error('AirLabs flights error:', e);
       }
-    } catch (e) {
-      console.error('AirLabs flights error:', e);
     }
 
     // Step 3: If no results from API, generate fallback flights

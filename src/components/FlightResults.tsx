@@ -130,11 +130,15 @@ export function FlightResults({ results, onSelect, onBack, searchParams }: Fligh
   );
 }
 
-function formatTime(iso: string): string {
+function formatTime(time: string): string {
+  if (!time) return '';
+  // Already "HH:MM" format
+  if (/^\d{2}:\d{2}$/.test(time)) return time;
   try {
-    const d = new Date(iso);
-    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+    const d = new Date(time);
+    if (isNaN(d.getTime())) return time;
+    return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'UTC' });
   } catch {
-    return iso;
+    return time;
   }
 }
